@@ -23,3 +23,9 @@ Running time is about 8 seconds for 0 - 10.000.000 range on the RaspberryPi 4.
 
 It takes about 48 seconds for 0 - 1.000.000.000 range on the RaspberryPi 4 and about 8 seconds on the i3-8100 CPU.
 
+<span style="color:yellow">C++</span>
+
+- build:
+> make cpp
+- run:
+> ./prime_number_cpp
