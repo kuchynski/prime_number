@@ -7,36 +7,46 @@
 #include <vector>
 #include <math.h>
 #include <algorithm>
+#include <numeric>
 
 class PrimeNumbers
 {
 private:
-	std::vector<unsigned> results;
+	std::vector<unsigned int> results;
 public:
 	PrimeNumbers(const auto min, const auto max)
 	{
 		auto func_init = [](auto n) { return (n > 1)? n / 2 - 1 : 0;};
 		auto func_convert = [](auto n) { return n + n + 3;};
 
-		const auto m_min_value = func_init(min);
-		const auto m_max_value = func_init(max);
-		std::vector<char> data(m_max_value, 1);
+		const auto min_value = func_init(min);
+		const auto max_value = func_init(max);
+		std::vector<char> data(max_value, 1);
+		const std::vector<char>::iterator iter_border = data.begin() + sqrt(max_value / 2);
+		auto index = 0;
 	
-		for(auto i = 0; i < sqrt(m_max_value / 2); i++) {
-			if(data[i]) {
-				const auto number = func_convert(i);
-				for(auto j = i + number; j < m_max_value; j += number) {
-					data[j] = 0;
-				}
-			}
-		}
 		if(min < 3)
 			results.push_back(2); // 2 is a prime number we don't have to calculate
-		for(auto i = m_min_value; i < m_max_value; i++) {
-			if(data[i]) {
-				results.push_back(func_convert(i));
+		
+		for_each(data.begin(), iter_border, 
+			[&index, &results=results, &max_value, &data, &func_convert](int n) {
+				if(n) {
+					const auto number = func_convert(index);
+					results.push_back(number);
+					std::vector<char>::iterator it = data.begin() + index + number;
+					for(; it < data.end(); it += number)
+						*it = 0;	// it isn't a prime number
+				}
+				index++;
 			}
-		}
+		);
+
+		for_each(iter_border, data.end(), 
+			[&index, &results=results, &func_convert](auto& n) {
+				if(n) results.push_back(func_convert(index));
+				index++;
+			}
+		);
 	}
 	void PrintAll(std::ostream &stream) const
 	{
@@ -51,7 +61,7 @@ public:
 
 int main(void)
 {
-	const PrimeNumbers primes(0, 1000);
+	const PrimeNumbers primes(0, 100);
 	
 	std::cout << "There are " << primes.GetSize() << " prime numbers" << std::endl;
 	primes.PrintAll(std::cout);
