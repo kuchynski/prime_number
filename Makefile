@@ -9,4 +9,4 @@ c: $(SRC_FILES_C)
 	rm -f *.o
 
 cpp: $(SRC_FILES_CPP)
-	g++ -std=c++17 -o prime_number_cpp $^
+	g++ -std=c++2a -fconcepts -o prime_number_cpp $^

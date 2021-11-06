@@ -5,31 +5,29 @@
 
 #include <iostream>  
 #include <vector>
-#include <math.h>
-#include <unordered_set>
-#include <functional>
+#include <cmath>
+#include <iterator>
 
+template <std::size_t max>
 class PrimeNumbers
 {
 private:
-	std::unordered_set<unsigned int> results;
+	std::vector<unsigned long> results;
 public:
-	PrimeNumbers(const auto max)
+	PrimeNumbers()
 	{
-		auto func_init = [](auto n) { return (n > 1)? n / 2 - 1 : 0;};
-		auto func_convert = [](auto n) { return n + n + 3;};
+		auto func_init = [](const auto n) { return (n > 1)? n / 2 - 1 : 0;};
+		auto func_convert = [](const auto n) { return n + n + 3;};
 
-		const auto max_value = func_init(max);
+		constexpr auto max_value = func_init(max);
 		std::vector<char> data(max_value, 1);
-		const std::vector<char>::iterator iter_border = data.begin() + sqrt(max_value / 2);
 		auto index = 0;
 
-		std::for_each(data.begin(), iter_border, 
-			[&index, &max_value, &data, &func_convert](int n) {
+		std::for_each_n(data.begin(), sqrt(max_value / 2), 
+			[&index, &data, &func_convert](int n) {
 				if(n) {
-					const auto number = func_convert(index);
-					std::vector<char>::iterator it = data.begin() + index + number;
-					for(; it < data.end(); it += number) {
+					const auto step = func_convert(index);
+					for(auto it = data.begin() + index + step; it < data.end(); it += step) {
 						*it = 0;	// it isn't a prime number
 					}
 				}
@@ -37,30 +35,28 @@ public:
 			}
 		);
 		
-		results.insert(2); // 2 is a prime number we don't have to calculate
-		results.reserve(1 + std::count_if(data.begin(), data.end(), [](auto &n){return n == 1;}));
+		results.push_back(2); // 2 is a prime number we don't have to calculate
 		index = 0;
 		for(auto n : data) {
 			if(n)
-				results.insert(func_convert(index));
+				results.push_back(func_convert(index));
 			index++;
 		}
 	}
 	
 	void PrintAll(std::ostream &stream) const
 	{
-		std::for_each(results.begin(), results.end(), 
-			[&stream](auto value) { stream << value << " "; });
-		stream << "\n";
+		std::copy(results.begin(), results.end(), std::ostream_iterator<int>(stream, " "));
+		stream << std::endl;
 	}
 
 	auto GetSize() const {return results.size();}
-	bool IsItPrime(auto n) const {return results.find(n) != results.end();} // .contains(n) since C++20
+	bool IsItPrime(const auto n) const {return std::find(results.begin(), results.end(), n) != results.end();}
 };
 
 int main(void)
-{
-	PrimeNumbers primes(100000000);
+{	
+	const PrimeNumbers<100000000> primes;
 	
 	std::cout << "There are " << primes.GetSize() << " prime numbers." << std::endl;
 	//primes.PrintAll(std::cout);
