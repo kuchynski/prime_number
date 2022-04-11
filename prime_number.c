@@ -9,7 +9,7 @@
 #include <stdlib.h>
 
 #define MIN_VALUE 0
-#define MAX_VALUE 100000
+#define MAX_VALUE 100000000
 #define N_MAX_VALUE (MAX_VALUE / 2 - 1)
 #define N_MIN_VALUE (MIN_VALUE / 2)
 

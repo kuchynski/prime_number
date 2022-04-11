@@ -7,6 +7,7 @@
 #include <vector>
 #include <cmath>
 #include <iterator>
+#include <memory>
 
 template <std::size_t max>
 class PrimeNumbers
@@ -16,18 +17,21 @@ private:
 public:
 	PrimeNumbers()
 	{
-		auto func_init = [](const auto n) { return (n > 1)? n / 2 - 1 : 0;};
+		constexpr auto func_init = [](const auto n) { return (n > 1)? n / 2 - 1 : 0;};
 		auto func_convert = [](const auto n) { return n + n + 3;};
 
 		constexpr auto max_value = func_init(max);
-		std::vector<char> data(max_value, 1);
+		constexpr auto finish = func_init(max_value);
+		auto pdata = std::make_unique<std::array<char, finish>>();
+		std::for_each(pdata->begin(), pdata->end(), [](auto &e) {e = 1;}); 
 		auto index = 0;
 
-		std::for_each_n(data.begin(), sqrt(max_value / 2), 
-			[&index, &data, &func_convert](int n) {
+		std::for_each_n(pdata->begin(), sqrt(finish / 2), 
+			[&index, &pdata, &func_convert](int n) {
 				if(n) {
 					const auto step = func_convert(index);
-					for(auto it = data.begin() + index + step; it < data.end(); it += step) {
+					const auto iter_data_end = pdata->end();
+					for(auto it = pdata->begin() + index + step; it < iter_data_end; it += step) {
 						*it = 0;	// it isn't a prime number
 					}
 				}
@@ -37,7 +41,7 @@ public:
 		
 		results.push_back(2); // 2 is a prime number we don't have to calculate
 		index = 0;
-		for(auto n : data) {
+		for(auto n : *pdata) {
 			if(n)
 				results.push_back(func_convert(index));
 			index++;
