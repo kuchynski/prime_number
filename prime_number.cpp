@@ -10,10 +10,8 @@
 #include <memory>
 
 template <std::size_t min_value,  std::size_t max_value>
-class PrimeNumbers
+class PrimeNumbers: public std::vector<unsigned long>
 {
-private:
-	std::vector<unsigned long> results;
 public:
 	PrimeNumbers()
 	{
@@ -27,7 +25,7 @@ public:
 			auto index = 0;
 
 			std::for_each_n(pdata->begin(), sqrt(finish / 2),
-				[&index, &pdata, &func_convert](int n) {
+				[&index, &pdata, &func_convert](auto n) {
 					if(n) {
 						const auto step = func_convert(index);
 						const auto iter_data_end = pdata->end();
@@ -40,12 +38,12 @@ public:
 			);
 
 			if(min_value <= 2)
-				results.push_back(2); // 2 is a prime number we don't have to calculate
+				push_back(2); // 2 is a prime number we don't have to calculate
 			index = start;
 			std::for_each(pdata->begin() + start, pdata->end(),
 				[&](auto &e) {
 					if(e)
-						results.push_back(func_convert(index));
+						push_back(func_convert(index));
 					index++;
 				}
 			);
@@ -54,10 +52,6 @@ public:
 
 	static constexpr auto min = min_value;
 	static constexpr auto max = max_value;
-	auto size() const {return results.size();}
-	auto begin() const {return results.begin();}
-	auto end() const {return results.end();}
-	auto find(const auto n) const {return std::find(results.begin(), results.end(), n);}
 };
 
 int main(void)
@@ -70,8 +64,8 @@ int main(void)
 	std::copy(primes.begin(), primes.end(), std::ostream_iterator<unsigned long>(std::cout, " "));
 	std::cout << std::endl;
 
-	for(int n : {3, 7, 9, 11, 25, 79, 1234567891, 1234567907, 1234567913, 1234567927, 1234567949, 1234567967, 1234567981})
-		if(primes.find(n) != primes.end())
+	for(auto n : {3, 7, 9, 11, 25, 79, 1234567891, 1234567907, 1234567913, 1234567927, 1234567949, 1234567967, 1234567981})
+		if(find(primes.begin(), primes.end(), n) != primes.end())
 			std::cout << n << " ";
 	std::cout << std::endl;
 
