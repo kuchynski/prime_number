@@ -1,6 +1,6 @@
 //
 // kuchynskiandrei@gmail.com
-// 2022
+// 2024
 //
 
 #include <iostream>
@@ -23,7 +23,7 @@ public:
 			constexpr auto start = func_init(min_value);
 			constexpr auto finish = func_init(max_value);
 			auto pdata = std::make_unique<std::array<char, finish>>();
-			std::for_each(pdata->begin(), pdata->end(), [](auto &e) {e = 1;}); 
+			std::for_each(pdata->begin(), pdata->end(), [](auto &e) {e = 1;});
 			auto index = 0;
 
 			std::for_each_n(pdata->begin(), sqrt(finish / 2),
@@ -51,16 +51,13 @@ public:
 			);
 		}
 	}
-	
-	void PrintAll(std::ostream &stream) const
-	{
-		std::cout << "There are " << GetSize() << " prime numbers in range [" << min_value << ":" << max_value << ")" << std::endl;
-		std::copy(results.begin(), results.end(), std::ostream_iterator<int>(stream, " "));
-		stream << std::endl;
-	}
 
-	auto GetSize() const {return results.size();}
-	bool IsItPrime(const auto n) const {return std::find(results.begin(), results.end(), n) != results.end();}
+	static constexpr auto min = min_value;
+	static constexpr auto max = max_value;
+	auto size() const {return results.size();}
+	auto begin() const {return results.begin();}
+	auto end() const {return results.end();}
+	auto find(const auto n) const {return std::find(results.begin(), results.end(), n);}
 };
 
 int main(void)
@@ -69,12 +66,14 @@ int main(void)
 	const auto max_value = 1'234'567'999;
 	const PrimeNumbers<min_value, max_value> primes;
 
-	primes.PrintAll(std::cout);
+	std::cout << "There are " << primes.size() << " prime numbers in range [" << primes.min << ":" << primes.max << ")" << std::endl;
+	std::copy(primes.begin(), primes.end(), std::ostream_iterator<unsigned long>(std::cout, " "));
+	std::cout << std::endl;
 
-	//for(int n : {3, 7, 9, 11, 25, 79})
-	//	if(primes.IsItPrime(n))
-	//		std::cout << n << " ";
-	//std::cout << std::endl;
+	for(int n : {3, 7, 9, 11, 25, 79, 1234567891, 1234567907, 1234567913, 1234567927, 1234567949, 1234567967, 1234567981})
+		if(primes.find(n) != primes.end())
+			std::cout << n << " ";
+	std::cout << std::endl;
 
 	return 0;
 }

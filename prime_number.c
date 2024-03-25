@@ -41,13 +41,11 @@ void main(void)
 	unsigned total_number = 0;
 	if(MIN_VALUE < 3) {
 		total_number = 1;
-		//printf("1 - 2\n");
 	}
 
 	for(unsigned i = N_MIN_VALUE; i < N_MAX_VALUE; i++) {
 		if(numbers[i]) {
 			total_number ++;
-			//printf("%d - %d\n", total_number, get_number(i));
 		}
 	}
 	printf("There are %d primes in the range %d - %d\n", total_number, MIN_VALUE, MAX_VALUE);
