@@ -8,8 +8,8 @@
 #include <math.h>
 #include <stdlib.h>
 
-#define MIN_VALUE 0
-#define MAX_VALUE 100000000
+#define MIN_VALUE 1234567890
+#define MAX_VALUE 1234567999
 #define N_MAX_VALUE (MAX_VALUE / 2 - 1)
 #define N_MIN_VALUE (MIN_VALUE / 2)
 
@@ -29,23 +29,19 @@ void main(void)
 	for(unsigned index = 0; index < end; index++) {
 		if(numbers[index]) {
 			const unsigned number = get_number(index);
-			unsigned i = index + number;
-			while(i < N_MAX_VALUE) {
+			for (unsigned i = index + number; i < N_MAX_VALUE; i += number) {
 				numbers[i] = 0;
-				i += number;
 			}
 		}
 	}
 
 	// Print results
-	unsigned total_number = 0;
-	if(MIN_VALUE < 3) {
-		total_number = 1;
-	}
+	unsigned total_number = (MIN_VALUE <= 2)? 1 : 0;
 
 	for(unsigned i = N_MIN_VALUE; i < N_MAX_VALUE; i++) {
 		if(numbers[i]) {
 			total_number ++;
+			printf("%d\n", get_number(i));
 		}
 	}
 	printf("There are %d primes in the range %d - %d\n", total_number, MIN_VALUE, MAX_VALUE);
